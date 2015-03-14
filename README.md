@@ -29,4 +29,8 @@ Future work
 Views for the `stdin`, `stdout`, and `stderr` file descriptors will eventually
 be added to `posix-main`. Further entry points may be added as need arises.
 
+
+Part of the [elvysh][2] project.
+
 [1]: https://github.com/shlevy/elvysh-errno
+[2]: https://github.com/shlevy/elvysh-project-documentation
