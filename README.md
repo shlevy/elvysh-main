@@ -25,12 +25,12 @@ defining a dataview that can wrap a prval of a given view *or* wrap nothing
 without changing the type.
 
 For example, a function whose type includes
-`!filedes ( 0 )  >> maybe_consumed ( filedes ( 0 ) )` can either close the
-file that is passed in and construct a `was_consumed ( )` in its place *or*
-keep the file open and construct a `not_consumed ( prf )` in its place. Note
-that neither case allows the caller to tell which occurred or to extract out
-the view if it was not consumed, so this is only useful when all following code
-is indifferent to the state of the proof.
+`!readable_filedes ( 0 )  >> maybe_consumed ( readable_filedes ( 0 ) )` can
+either close the file that is passed in and construct a `was_consumed ( )` in
+its place *or* keep the file open and construct a `not_consumed ( prf )` in its
+place. Note that neither case allows the caller to tell which occurred or to
+extract out the view if it was not consumed, so this is only useful when all
+following code is indifferent to the state of the proof.
 
 posix-main
 ----------
@@ -39,7 +39,7 @@ posix-main
 `POSIX` systems. In addition to `argc` and `argv`, `posix_main` takes an
 `errno_v ( free )` view (see [elvysh-errno][1]) that must end up unconsumed,
 as well as `filedes` views (see [elvysh-filedes][3]) for `stdin`, `stdout`, and
-`stderr` that may optionally be consumed.
+`stderr` that may optionally be consumed and may end up with any properties.
 
 Future work
 -----------

@@ -14,18 +14,26 @@ staload "elvysh/errno.sats"
  * at the end of the function, but the filedes proofs may be consumed (see
  * elvysh/maybe-consumed.sats for details).
  *
+ * stdin (filedes 0) is readable.
+ *
  * It is expected to include this file directly into the file which implements
  * posix_main
  *)
 
 (* posix_main interface *)
 extern fun posix_main { n:int | n >= 1 } ( ev: !errno_v ( free )
-                                         , stdin: !filedes ( 0 ) >>
-                                             maybe_consumed ( filedes ( 0 ) )
-                                         , stdout: !filedes ( 1 ) >>
-                                             maybe_consumed ( filedes ( 1 ) )
-                                         , stderr: !filedes ( 2 ) >>
-                                             maybe_consumed ( filedes ( 2 ) )
+                                         , stdin: !readable_filedes ( 0 ) >>
+                                             maybe_consumed (
+                                               any_filedes ( 0 )
+                                             )
+                                         , stdout: !any_filedes ( 1 ) >>
+                                             maybe_consumed (
+                                               any_filedes ( 1 )
+                                             )
+                                         , stderr: !any_filedes ( 2 ) >>
+                                             maybe_consumed (
+                                               any_filedes ( 2 )
+                                             )
                                          | argc: int n
                                          , argv: !argv ( n )
                                          ): int = "sta#elvysh_main_posix_main"
@@ -34,9 +42,9 @@ extern fun posix_main { n:int | n >= 1 } ( ev: !errno_v ( free )
 implement main ( argc, argv ) = let
   extern praxi { v: view } __assert_view (): v
   prval ev = __assert_view< errno_v ( free ) > ()
-  prval stdin = __assert_view< filedes ( 0 ) > ()
-  prval stdout = __assert_view< filedes ( 1 ) > ()
-  prval stderr = __assert_view< filedes ( 2 ) > ()
+  prval stdin = __assert_view< readable_filedes ( 0 ) > ()
+  prval stdout = __assert_view< any_filedes ( 1 ) > ()
+  prval stderr = __assert_view< any_filedes ( 2 ) > ()
   val res = posix_main ( ev, stdin, stdout, stderr | argc, argv )
   extern praxi { v: view } __unassert_view ( x: v ): ()
   prval _ = __unassert_view ( ev )
